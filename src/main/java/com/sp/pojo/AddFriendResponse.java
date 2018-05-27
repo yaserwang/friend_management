@@ -6,7 +6,7 @@ public class AddFriendResponse {
 
     private boolean success;
 
-    public AddFriendResponse() {
+    private AddFriendResponse() {
     }
 
     public AddFriendResponse(boolean success) {

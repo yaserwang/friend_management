@@ -2,6 +2,7 @@ package com.sp.controller;
 
 import com.sp.pojo.AddFriendRequest;
 import com.sp.pojo.AddFriendResponse;
+import com.sp.pojo.GetFriendResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,11 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -22,9 +28,27 @@ public class FriendControllerTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void exampleTest() {
-        AddFriendResponse body = this.restTemplate.postForObject("/add", new AddFriendRequest(), AddFriendResponse.class);
+    public void addFriend() {
+        List<String> friends = new ArrayList<>();
+        friends.add("andy@example.com");
+        friends.add("john@example.com");
+        AddFriendResponse body = this.restTemplate.postForObject("/add", new AddFriendRequest(friends), AddFriendResponse.class);
         assertThat(body, is(new AddFriendResponse(true)));
+    }
+
+    @Test
+    public void getFriends() {
+        List<String> friends = new ArrayList<>();
+        friends.add("andy@example.com");
+        friends.add("john@example.com");
+        AddFriendResponse addFriendResponseBody = this.restTemplate.postForObject("/add", new AddFriendRequest(friends), AddFriendResponse.class);
+        assertThat(addFriendResponseBody, is(new AddFriendResponse(true)));
+
+        Set<String> returned = new HashSet<>();
+        returned.add("john@example.com");
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/get", "andy@example.com", GetFriendResponse.class);
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned, returned.size())));
+
     }
 
 }
