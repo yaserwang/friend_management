@@ -27,7 +27,13 @@ public class FriendController {
     private Map<String, Set<String>> subscribe = new HashMap<>();
     private Map<String, Set<String>> blocks = new HashMap<>();
 
-    @PostMapping(value = "/add", headers = "Accept=application/json", produces = "application/json")
+    @PostMapping(value = "/addUser", headers = "Accept=application/json", produces = "application/json")
+    public Response addFriend(@RequestBody String email){
+        users.add(email);
+        return new Response(true);
+    }
+
+    @PostMapping(value = "/addFriend", headers = "Accept=application/json", produces = "application/json")
     public Response addFriend(@RequestBody FriendRequest request){
         String requestor = request.getFriends().get(0);
         String target = request.getFriends().get(1);
@@ -56,7 +62,7 @@ public class FriendController {
         return blocks.get(requestor) != null && blocks.get(requestor).contains(target);
     }
 
-    @PostMapping(value = "/get")
+    @PostMapping(value = "/getFriend", headers = "Accept=application/json", produces = "application/json")
     public GetFriendResponse getFriend(@RequestBody String email){
         if(isNotValidUser(email)){
             return new GetFriendResponse(false, email + " is not a valid user");
@@ -64,7 +70,7 @@ public class FriendController {
         return new GetFriendResponse(true, friends.get(email), friends.get(email).size());
     }
 
-    @PostMapping(value = "/getCommon")
+    @PostMapping(value = "/getCommon", headers = "Accept=application/json", produces = "application/json")
     public GetFriendResponse getCommonFriend(@RequestBody FriendRequest request){
         String a = request.getFriends().get(0);
         String b = request.getFriends().get(1);
@@ -81,7 +87,7 @@ public class FriendController {
         return new GetFriendResponse(true, common, common.size());
     }
 
-    @PostMapping(value = "/subscribe")
+    @PostMapping(value = "/subscribe", headers = "Accept=application/json", produces = "application/json")
     public Response subscribe(@RequestBody SubscribeRequest request){
         if(isNotValidUser(request.getRequestor())){
             return new Response(false, request.getRequestor() + " is not a valid user");
@@ -93,7 +99,7 @@ public class FriendController {
         return new Response(true);
     }
 
-    @PostMapping(value = "/block")
+    @PostMapping(value = "/block", headers = "Accept=application/json", produces = "application/json")
     public Response block(@RequestBody SubscribeRequest request){
         if(isNotValidUser(request.getRequestor())){
             return new Response(false, request.getRequestor() + " is not a valid user");
@@ -105,7 +111,7 @@ public class FriendController {
         return new Response(true);
     }
 
-    @PostMapping(value = "/publish")
+    @PostMapping(value = "/publish", headers = "Accept=application/json", produces = "application/json")
     public PublishResponse publish(@RequestBody PublishRequest request){
         if(isNotValidUser(request.getSender())){
             return new PublishResponse(false, request.getSender() + " is not a valid user");

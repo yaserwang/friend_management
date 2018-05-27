@@ -33,7 +33,7 @@ public class FriendControllerTest {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("john@example.com");
-        Response body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        Response body = this.restTemplate.postForObject("/addFriend", new FriendRequest(friends), Response.class);
         assertThat(body, is(new Response(true)));
     }
 
@@ -42,7 +42,7 @@ public class FriendControllerTest {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("abc@example.com");
-        Response body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        Response body = this.restTemplate.postForObject("/addFriend", new FriendRequest(friends), Response.class);
         assertThat(body, is(new Response(false,"abc@example.com is not a valid user")));
     }
 
@@ -51,7 +51,7 @@ public class FriendControllerTest {
         List<String> friends = new ArrayList<>();
         friends.add("abc@example.com");
         friends.add("john@example.com");
-        Response body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        Response body = this.restTemplate.postForObject("/addFriend", new FriendRequest(friends), Response.class);
         assertThat(body, is(new Response(false,"abc@example.com is not a valid user")));
     }
 
@@ -60,13 +60,13 @@ public class FriendControllerTest {
         Set<String> returned = new HashSet<>();
         returned.add("john@example.com");
 
-        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/get", "andy@example.com", GetFriendResponse.class);
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getFriend", "andy@example.com", GetFriendResponse.class);
         assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned, returned.size())));
     }
 
     @Test
     public void test2_getFriends_withInvalidUser() {
-        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/get", "abc@example.com", GetFriendResponse.class);
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getFriend", "abc@example.com", GetFriendResponse.class);
         assertThat(getFriendResponseBody, is(new GetFriendResponse(false, "abc@example.com is not a valid user")));
     }
 
@@ -75,13 +75,13 @@ public class FriendControllerTest {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("common@example.com");
-        Response addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        Response addFriendResponseBody = this.restTemplate.postForObject("/addFriend", new FriendRequest(friends), Response.class);
         assertThat(addFriendResponseBody, is(new Response(true)));
 
         friends = new ArrayList<>();
         friends.add("common@example.com");
         friends.add("john@example.com");
-        addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        addFriendResponseBody = this.restTemplate.postForObject("/addFriend", new FriendRequest(friends), Response.class);
         assertThat(addFriendResponseBody, is(new Response(true)));
 
         friends = new ArrayList<>();
@@ -141,7 +141,7 @@ public class FriendControllerTest {
         List<String> friends = new ArrayList<>();
         friends.add("lisa@example.com");
         friends.add("john@example.com");
-        body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        body = this.restTemplate.postForObject("/addFriend", new FriendRequest(friends), Response.class);
         assertThat(body, is(new Response(false, "john@example.com is blocked by lisa@example.com")));
     }
 
