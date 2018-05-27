@@ -1,8 +1,9 @@
 package com.sp.controller;
 
-import com.sp.pojo.AddFriendResponse;
 import com.sp.pojo.FriendRequest;
 import com.sp.pojo.GetFriendResponse;
+import com.sp.pojo.Response;
+import com.sp.pojo.SubscribeRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,10 @@ public class FriendController {
     private Map<String, Set<String>> friends = new HashMap<>();
 
     @PostMapping(value = "/add", headers = "Accept=application/json", produces = "application/json")
-    public AddFriendResponse addFriend(@RequestBody FriendRequest request){
+    public Response addFriend(@RequestBody FriendRequest request){
         friends.computeIfAbsent(request.getFriends().get(0), k -> new HashSet<>()).add(request.getFriends().get(1));
         friends.computeIfAbsent(request.getFriends().get(1), k -> new HashSet<>()).add(request.getFriends().get(0));
-        return new AddFriendResponse(true);
+        return new Response(true);
     }
 
     @PostMapping(value = "/get")
@@ -38,4 +39,8 @@ public class FriendController {
         return new GetFriendResponse(true, common, common.size());
     }
 
+    @PostMapping(value = "/subscribe")
+    public Response subscribe(@RequestBody SubscribeRequest request){
+        return new Response(true);
+    }
 }

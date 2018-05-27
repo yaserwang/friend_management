@@ -1,8 +1,9 @@
 package com.sp.controller;
 
-import com.sp.pojo.AddFriendResponse;
 import com.sp.pojo.FriendRequest;
 import com.sp.pojo.GetFriendResponse;
+import com.sp.pojo.Response;
+import com.sp.pojo.SubscribeRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class FriendControllerTest {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("john@example.com");
-        AddFriendResponse body = this.restTemplate.postForObject("/add", new FriendRequest(friends), AddFriendResponse.class);
-        assertThat(body, is(new AddFriendResponse(true)));
+        Response body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        assertThat(body, is(new Response(true)));
     }
 
     @Test
@@ -41,14 +42,14 @@ public class FriendControllerTest {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("john@example.com");
-        AddFriendResponse addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), AddFriendResponse.class);
-        assertThat(addFriendResponseBody, is(new AddFriendResponse(true)));
+        Response addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        assertThat(addFriendResponseBody, is(new Response(true)));
 
         friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("common@example.com");
-        addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), AddFriendResponse.class);
-        assertThat(addFriendResponseBody, is(new AddFriendResponse(true)));
+        addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        assertThat(addFriendResponseBody, is(new Response(true)));
 
         Set<String> returned = new HashSet<>();
         returned.add("john@example.com");
@@ -63,14 +64,14 @@ public class FriendControllerTest {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("common@example.com");
-        AddFriendResponse addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), AddFriendResponse.class);
-        assertThat(addFriendResponseBody, is(new AddFriendResponse(true)));
+        Response addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        assertThat(addFriendResponseBody, is(new Response(true)));
 
         friends = new ArrayList<>();
         friends.add("common@example.com");
         friends.add("john@example.com");
-        addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), AddFriendResponse.class);
-        assertThat(addFriendResponseBody, is(new AddFriendResponse(true)));
+        addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        assertThat(addFriendResponseBody, is(new Response(true)));
 
         friends = new ArrayList<>();
         friends.add("andy@example.com");
@@ -81,6 +82,12 @@ public class FriendControllerTest {
         GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getCommon", new FriendRequest(friends), GetFriendResponse.class);
         assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned, returned.size())));
 
+    }
+
+    @Test
+    public void subscribe(){
+        Response body = this.restTemplate.postForObject("/subscribe", new SubscribeRequest("lisa@example.com", "john@example.com"), Response.class);
+        assertThat(body, is(new Response(true)));
     }
 
 }

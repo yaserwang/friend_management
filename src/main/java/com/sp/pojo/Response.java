@@ -2,14 +2,14 @@ package com.sp.pojo;
 
 import java.util.Objects;
 
-public class AddFriendResponse {
+public class Response {
 
     private boolean success;
 
-    private AddFriendResponse() {
+    private Response() {
     }
 
-    public AddFriendResponse(boolean success) {
+    public Response(boolean success) {
         this.success = success;
     }
 
@@ -21,7 +21,7 @@ public class AddFriendResponse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AddFriendResponse that = (AddFriendResponse) o;
+        Response that = (Response) o;
         return success == that.success;
     }
 
