@@ -1,8 +1,7 @@
 package com.sp.controller;
 
-import com.sp.pojo.AddFriendRequest;
 import com.sp.pojo.AddFriendResponse;
-import com.sp.pojo.GetCommonFriendRequest;
+import com.sp.pojo.FriendRequest;
 import com.sp.pojo.GetFriendResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,7 @@ public class FriendController {
     private Map<String, Set<String>> friends = new HashMap<>();
 
     @PostMapping(value = "/add", headers = "Accept=application/json", produces = "application/json")
-    public AddFriendResponse addFriend(@RequestBody AddFriendRequest request){
+    public AddFriendResponse addFriend(@RequestBody FriendRequest request){
         friends.computeIfAbsent(request.getFriends().get(0), k -> new HashSet<>()).add(request.getFriends().get(1));
         friends.computeIfAbsent(request.getFriends().get(1), k -> new HashSet<>()).add(request.getFriends().get(0));
         return new AddFriendResponse(true);
@@ -31,7 +30,7 @@ public class FriendController {
     }
 
     @PostMapping(value = "/getCommon")
-    public GetFriendResponse getCommonFriend(@RequestBody GetCommonFriendRequest request){
+    public GetFriendResponse getCommonFriend(@RequestBody FriendRequest request){
         Set<String> a = friends.get(request.getFriends().get(0));
         Set<String> b = friends.get(request.getFriends().get(1));
         Set<String> common = new HashSet<>(a);

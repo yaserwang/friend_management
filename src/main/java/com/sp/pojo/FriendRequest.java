@@ -2,13 +2,13 @@ package com.sp.pojo;
 
 import java.util.List;
 
-public class AddFriendRequest {
+public class FriendRequest {
 
     private List<String> friends;
 
-    private AddFriendRequest() { }
+    private FriendRequest() { }
 
-    public AddFriendRequest(List<String> friends) {
+    public FriendRequest(List<String> friends) {
         this.friends = friends;
     }
 
