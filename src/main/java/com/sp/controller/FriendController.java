@@ -31,15 +31,25 @@ public class FriendController {
     public Response addFriend(@RequestBody FriendRequest request){
         String requestor = request.getFriends().get(0);
         String target = request.getFriends().get(1);
+        if(isNotValidUser(requestor)){
+            return new Response(false, requestor + " is not a valid user");
+        }
+        if(isNotValidUser(target)){
+            return new Response(false, target + " is not a valid user");
+        }
         if (isBlocked(requestor, target)) {
-            return new Response(false);
+            return new Response(false, target + " is blocked by " + requestor);
         } else if (isBlocked(target, requestor)) {
-            return new Response(false);
+            return new Response(false, requestor + " is blocked by " + target);
         } else {
             friends.computeIfAbsent(requestor, k -> new HashSet<>()).add(target);
             friends.computeIfAbsent(target, k -> new HashSet<>()).add(requestor);
             return new Response(true);
         }
+    }
+
+    private boolean isNotValidUser(String user) {
+        return !users.contains(user);
     }
 
     private boolean isBlocked(String requestor, String target){
@@ -48,32 +58,58 @@ public class FriendController {
 
     @PostMapping(value = "/get")
     public GetFriendResponse getFriend(@RequestBody String email){
+        if(isNotValidUser(email)){
+            return new GetFriendResponse(false, email + " is not a valid user");
+        }
         return new GetFriendResponse(true, friends.get(email), friends.get(email).size());
     }
 
     @PostMapping(value = "/getCommon")
     public GetFriendResponse getCommonFriend(@RequestBody FriendRequest request){
-        Set<String> a = friends.get(request.getFriends().get(0));
-        Set<String> b = friends.get(request.getFriends().get(1));
-        Set<String> common = new HashSet<>(a);
-        common.retainAll(b);
+        String a = request.getFriends().get(0);
+        String b = request.getFriends().get(1);
+        if(isNotValidUser(a)){
+            return new GetFriendResponse(false, a + " is not a valid user");
+        }
+        if(isNotValidUser(b)){
+            return new GetFriendResponse(false, b + " is not a valid user");
+        }
+        Set<String> af = friends.get(a);
+        Set<String> bf = friends.get(b);
+        Set<String> common = new HashSet<>(af);
+        common.retainAll(bf);
         return new GetFriendResponse(true, common, common.size());
     }
 
     @PostMapping(value = "/subscribe")
     public Response subscribe(@RequestBody SubscribeRequest request){
+        if(isNotValidUser(request.getRequestor())){
+            return new Response(false, request.getRequestor() + " is not a valid user");
+        }
+        if(isNotValidUser(request.getTarget())){
+            return new Response(false, request.getTarget() + " is not a valid user");
+        }
         subscribe.computeIfAbsent(request.getRequestor(), k -> new HashSet<>()).add(request.getTarget());
         return new Response(true);
     }
 
     @PostMapping(value = "/block")
     public Response block(@RequestBody SubscribeRequest request){
+        if(isNotValidUser(request.getRequestor())){
+            return new Response(false, request.getRequestor() + " is not a valid user");
+        }
+        if(isNotValidUser(request.getTarget())){
+            return new Response(false, request.getTarget() + " is not a valid user");
+        }
         blocks.computeIfAbsent(request.getRequestor(), k-> new HashSet<>()).add(request.getTarget());
         return new Response(true);
     }
 
     @PostMapping(value = "/publish")
     public PublishResponse publish(@RequestBody PublishRequest request){
+        if(isNotValidUser(request.getSender())){
+            return new PublishResponse(false, request.getSender() + " is not a valid user");
+        }
         Set<String> recipients = new HashSet<>();
         Set<String> friendList = friends.get(request.getSender());
         if(friendList!=null)

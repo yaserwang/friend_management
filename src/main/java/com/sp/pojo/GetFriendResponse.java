@@ -1,20 +1,33 @@
 package com.sp.pojo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetFriendResponse {
 
     private boolean success;
     private Set<String> friends;
-    private int count;
+    private Integer count;
+    private String message;
 
     private GetFriendResponse() { }
 
-    public GetFriendResponse(boolean success, Set<String> friends, int count) {
+    public GetFriendResponse(boolean success, Set<String> friends, Integer count) {
+        this(success, friends, count, null);
+    }
+
+    public GetFriendResponse(boolean success, String message){
+        this(success, null, null, message);
+    }
+
+    public GetFriendResponse(boolean success, Set<String> friends, Integer count, String message) {
         this.success = success;
         this.friends = friends;
         this.count = count;
+        this.message = message;
     }
 
     public boolean isSuccess() {
@@ -25,8 +38,12 @@ public class GetFriendResponse {
         return friends;
     }
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     @Override
@@ -35,13 +52,14 @@ public class GetFriendResponse {
         if (o == null || getClass() != o.getClass()) return false;
         GetFriendResponse that = (GetFriendResponse) o;
         return success == that.success &&
-                count == that.count &&
-                Objects.equals(friends, that.friends);
+                Objects.equals(friends, that.friends) &&
+                Objects.equals(count, that.count) &&
+                Objects.equals(message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(success, friends, count);
+        return Objects.hash(success, friends, count, message);
     }
 
     @Override
@@ -50,6 +68,7 @@ public class GetFriendResponse {
                 "success=" + success +
                 ", friends=" + friends +
                 ", count=" + count +
+                ", message='" + message + '\'' +
                 '}';
     }
 }

@@ -38,12 +38,36 @@ public class FriendControllerTest {
     }
 
     @Test
+    public void test1_addFriend_withInvalidUser1() {
+        List<String> friends = new ArrayList<>();
+        friends.add("andy@example.com");
+        friends.add("abc@example.com");
+        Response body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        assertThat(body, is(new Response(false,"abc@example.com is not a valid user")));
+    }
+
+    @Test
+    public void test1_addFriend_withInvalidUser2() {
+        List<String> friends = new ArrayList<>();
+        friends.add("abc@example.com");
+        friends.add("john@example.com");
+        Response body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        assertThat(body, is(new Response(false,"abc@example.com is not a valid user")));
+    }
+
+    @Test
     public void test2_getFriends() {
         Set<String> returned = new HashSet<>();
         returned.add("john@example.com");
 
         GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/get", "andy@example.com", GetFriendResponse.class);
         assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned, returned.size())));
+    }
+
+    @Test
+    public void test2_getFriends_withInvalidUser() {
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/get", "abc@example.com", GetFriendResponse.class);
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(false, "abc@example.com is not a valid user")));
     }
 
     @Test
@@ -72,9 +96,41 @@ public class FriendControllerTest {
     }
 
     @Test
+    public void test3_getCommonFriends_withInvalidUser1() {
+        List<String> friends = new ArrayList<>();
+        friends.add("abc@example.com");
+        friends.add("john@example.com");
+
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getCommon", new FriendRequest(friends), GetFriendResponse.class);
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(false, "abc@example.com is not a valid user")));
+    }
+
+    @Test
+    public void test3_getCommonFriends_withInvalidUser2() {
+        List<String> friends = new ArrayList<>();
+        friends.add("andy@example.com");
+        friends.add("abc@example.com");
+
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getCommon", new FriendRequest(friends), GetFriendResponse.class);
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(false, "abc@example.com is not a valid user")));
+    }
+
+    @Test
     public void test4_subscribe(){
         Response body = this.restTemplate.postForObject("/subscribe", new SubscribeRequest("lisa@example.com", "john@example.com"), Response.class);
         assertThat(body, is(new Response(true)));
+    }
+
+    @Test
+    public void test4_subscribe_withInvalidUser1(){
+        Response body = this.restTemplate.postForObject("/subscribe", new SubscribeRequest("abc@example.com", "john@example.com"), Response.class);
+        assertThat(body, is(new Response(false, "abc@example.com is not a valid user")));
+    }
+
+    @Test
+    public void test4_subscribe_withInvalidUser2(){
+        Response body = this.restTemplate.postForObject("/subscribe", new SubscribeRequest("lisa@example.com", "abc@example.com"), Response.class);
+        assertThat(body, is(new Response(false, "abc@example.com is not a valid user")));
     }
 
     @Test
@@ -86,7 +142,19 @@ public class FriendControllerTest {
         friends.add("lisa@example.com");
         friends.add("john@example.com");
         body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
-        assertThat(body, is(new Response(false)));
+        assertThat(body, is(new Response(false, "john@example.com is blocked by lisa@example.com")));
+    }
+
+    @Test
+    public void test5_block_withInvalidUser1(){
+        Response body = this.restTemplate.postForObject("/block", new SubscribeRequest("abc@example.com", "john@example.com"), Response.class);
+        assertThat(body, is(new Response(false, "abc@example.com is not a valid user")));
+    }
+
+    @Test
+    public void test5_block_withInvalidUser2(){
+        Response body = this.restTemplate.postForObject("/block", new SubscribeRequest("lisa@example.com", "abc@example.com"), Response.class);
+        assertThat(body, is(new Response(false, "abc@example.com is not a valid user")));
     }
 
     @Test
@@ -97,5 +165,11 @@ public class FriendControllerTest {
         recipients.add("andy@example.com");
         recipients.add("kate@example.com");
         assertThat(body, is(new PublishResponse(true, recipients)));
+    }
+
+    @Test
+    public void test6_publish_withInvalidUser(){
+        PublishResponse body = this.restTemplate.postForObject("/publish", new PublishRequest("abc@example.com", "Hello World! kate@example.com"), PublishResponse.class);
+        assertThat(body, is(new PublishResponse(false, "abc@example.com is not a valid user")));
     }
 }
