@@ -17,12 +17,25 @@ import java.util.Set;
 public class FriendController {
 
     private Map<String, Set<String>> friends = new HashMap<>();
+    private Map<String, Set<String>> blocks = new HashMap<>();
 
     @PostMapping(value = "/add", headers = "Accept=application/json", produces = "application/json")
     public Response addFriend(@RequestBody FriendRequest request){
-        friends.computeIfAbsent(request.getFriends().get(0), k -> new HashSet<>()).add(request.getFriends().get(1));
-        friends.computeIfAbsent(request.getFriends().get(1), k -> new HashSet<>()).add(request.getFriends().get(0));
-        return new Response(true);
+        String requestor = request.getFriends().get(0);
+        String target = request.getFriends().get(1);
+        if (isBlocked(requestor, target)) {
+            return new Response(false);
+        } else if (isBlocked(target, requestor)) {
+            return new Response(false);
+        } else {
+            friends.computeIfAbsent(requestor, k -> new HashSet<>()).add(target);
+            friends.computeIfAbsent(target, k -> new HashSet<>()).add(requestor);
+            return new Response(true);
+        }
+    }
+
+    private boolean isBlocked(String requestor, String target){
+        return blocks.get(requestor) != null && blocks.get(requestor).contains(target);
     }
 
     @PostMapping(value = "/get")
@@ -41,6 +54,12 @@ public class FriendController {
 
     @PostMapping(value = "/subscribe")
     public Response subscribe(@RequestBody SubscribeRequest request){
+        return new Response(true);
+    }
+
+    @PostMapping(value = "/block")
+    public Response block(@RequestBody SubscribeRequest request){
+        blocks.computeIfAbsent(request.getRequestor(), k-> new HashSet<>()).add(request.getTarget());
         return new Response(true);
     }
 }

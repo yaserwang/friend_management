@@ -4,8 +4,10 @@ import com.sp.pojo.FriendRequest;
 import com.sp.pojo.GetFriendResponse;
 import com.sp.pojo.Response;
 import com.sp.pojo.SubscribeRequest;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +22,7 @@ import java.util.Set;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -29,7 +32,7 @@ public class FriendControllerTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void addFriend() {
+    public void test1_addFriend() {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("john@example.com");
@@ -38,29 +41,16 @@ public class FriendControllerTest {
     }
 
     @Test
-    public void getFriends() {
-        List<String> friends = new ArrayList<>();
-        friends.add("andy@example.com");
-        friends.add("john@example.com");
-        Response addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
-        assertThat(addFriendResponseBody, is(new Response(true)));
-
-        friends = new ArrayList<>();
-        friends.add("andy@example.com");
-        friends.add("common@example.com");
-        addFriendResponseBody = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
-        assertThat(addFriendResponseBody, is(new Response(true)));
-
+    public void test2_getFriends() {
         Set<String> returned = new HashSet<>();
         returned.add("john@example.com");
-        returned.add("common@example.com");
 
         GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/get", "andy@example.com", GetFriendResponse.class);
         assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned, returned.size())));
     }
 
     @Test
-    public void getCommonFriends() {
+    public void test3_getCommonFriends() {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("common@example.com");
@@ -85,9 +75,21 @@ public class FriendControllerTest {
     }
 
     @Test
-    public void subscribe(){
+    public void test4_subscribe(){
         Response body = this.restTemplate.postForObject("/subscribe", new SubscribeRequest("lisa@example.com", "john@example.com"), Response.class);
         assertThat(body, is(new Response(true)));
+    }
+
+    @Test
+    public void test5_block(){
+        Response body = this.restTemplate.postForObject("/block", new SubscribeRequest("lisa@example.com", "john@example.com"), Response.class);
+        assertThat(body, is(new Response(true)));
+
+        List<String> friends = new ArrayList<>();
+        friends.add("lisa@example.com");
+        friends.add("john@example.com");
+        body = this.restTemplate.postForObject("/add", new FriendRequest(friends), Response.class);
+        assertThat(body, is(new Response(false)));
     }
 
 }

@@ -29,4 +29,11 @@ public class Response {
     public int hashCode() {
         return Objects.hash(success);
     }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "success=" + success +
+                '}';
+    }
 }
