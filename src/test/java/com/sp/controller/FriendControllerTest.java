@@ -60,13 +60,13 @@ public class FriendControllerTest {
         Set<String> returned = new HashSet<>();
         returned.add("john@example.com");
 
-        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getFriend", "andy@example.com", GetFriendResponse.class);
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getFriend", new GetFriendRequest("andy@example.com"), GetFriendResponse.class);
         assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned, returned.size())));
     }
 
     @Test
     public void test2_getFriends_withInvalidUser() {
-        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getFriend", "abc@example.com", GetFriendResponse.class);
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getFriend", new GetFriendRequest("abc@example.com"), GetFriendResponse.class);
         assertThat(getFriendResponseBody, is(new GetFriendResponse(false, "abc@example.com is not a valid user")));
     }
 

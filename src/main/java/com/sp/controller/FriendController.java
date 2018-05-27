@@ -65,7 +65,8 @@ public class FriendController {
     }
 
     @PostMapping(value = "/getFriend", headers = "Accept=application/json", produces = "application/json")
-    public GetFriendResponse getFriend(@RequestBody String email){
+    public GetFriendResponse getFriend(@RequestBody GetFriendRequest request){
+        String email = request.getEmail();
         if(isNotValidUser(email)){
             return new GetFriendResponse(false, email + " is not a valid user");
         }
