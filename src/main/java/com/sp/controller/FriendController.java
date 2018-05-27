@@ -70,7 +70,7 @@ public class FriendController {
         if(isNotValidUser(email)){
             return new GetFriendResponse(false, email + " is not a valid user");
         }
-        return new GetFriendResponse(true, friends.get(email), friends.get(email).size());
+        return new GetFriendResponse(true, friends.getOrDefault(email, new HashSet<>()));
     }
 
     @PostMapping(value = "/getCommon", headers = "Accept=application/json", produces = "application/json")
@@ -87,7 +87,7 @@ public class FriendController {
         Set<String> bf = friends.get(b);
         Set<String> common = new HashSet<>(af);
         common.retainAll(bf);
-        return new GetFriendResponse(true, common, common.size());
+        return new GetFriendResponse(true, common);
     }
 
     @PostMapping(value = "/subscribe", headers = "Accept=application/json", produces = "application/json")

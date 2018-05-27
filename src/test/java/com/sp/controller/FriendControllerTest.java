@@ -29,6 +29,13 @@ public class FriendControllerTest {
     private TestRestTemplate restTemplate;
 
     @Test
+    public void test0_getFriends_beforeAddFriend() {
+        Set<String> returned = new HashSet<>();
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getFriend", new GetFriendRequest("andy@example.com"), GetFriendResponse.class);
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned)));
+    }
+
+    @Test
     public void test1_addFriend() {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
@@ -61,7 +68,7 @@ public class FriendControllerTest {
         returned.add("john@example.com");
 
         GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getFriend", new GetFriendRequest("andy@example.com"), GetFriendResponse.class);
-        assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned, returned.size())));
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned)));
     }
 
     @Test
@@ -71,7 +78,19 @@ public class FriendControllerTest {
     }
 
     @Test
-    public void test3_getCommonFriends() {
+    public void test3_getCommonFriends1() {
+        List<String> friends = new ArrayList<>();
+        friends.add("andy@example.com");
+        friends.add("john@example.com");
+
+        Set<String> returned = new HashSet<>();
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getCommon", new FriendRequest(friends), GetFriendResponse.class);
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned)));
+
+    }
+
+    @Test
+    public void test3_getCommonFriends2() {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
         friends.add("common@example.com");
@@ -91,7 +110,7 @@ public class FriendControllerTest {
         Set<String> returned = new HashSet<>();
         returned.add("common@example.com");
         GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getCommon", new FriendRequest(friends), GetFriendResponse.class);
-        assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned, returned.size())));
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned)));
 
     }
 

@@ -15,18 +15,18 @@ public class GetFriendResponse {
 
     private GetFriendResponse() { }
 
-    public GetFriendResponse(boolean success, Set<String> friends, Integer count) {
-        this(success, friends, count, null);
+    public GetFriendResponse(boolean success, Set<String> friends) {
+        this(success, friends, null);
     }
 
     public GetFriendResponse(boolean success, String message){
-        this(success, null, null, message);
+        this(success, null, message);
     }
 
-    public GetFriendResponse(boolean success, Set<String> friends, Integer count, String message) {
+    public GetFriendResponse(boolean success, Set<String> friends, String message) {
         this.success = success;
         this.friends = friends;
-        this.count = count;
+        this.count = friends == null?null:friends.size();
         this.message = message;
     }
 
