@@ -1,9 +1,6 @@
 package com.sp.controller;
 
-import com.sp.pojo.FriendRequest;
-import com.sp.pojo.GetFriendResponse;
-import com.sp.pojo.Response;
-import com.sp.pojo.SubscribeRequest;
+import com.sp.pojo.*;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,4 +89,13 @@ public class FriendControllerTest {
         assertThat(body, is(new Response(false)));
     }
 
+    @Test
+    public void test6_publish(){
+        PublishResponse body = this.restTemplate.postForObject("/publish", new PublishRequest("john@example.com", "Hello World! kate@example.com"), PublishResponse.class);
+        Set<String> recipients = new HashSet<>();
+        recipients.add("common@example.com");
+        recipients.add("andy@example.com");
+        recipients.add("kate@example.com");
+        assertThat(body, is(new PublishResponse(true, recipients)));
+    }
 }
