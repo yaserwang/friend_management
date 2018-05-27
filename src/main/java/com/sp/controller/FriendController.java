@@ -28,7 +28,7 @@ public class FriendController {
     private Map<String, Set<String>> blocks = new HashMap<>();
 
     @PostMapping(value = "/addUser", headers = "Accept=application/json", produces = "application/json")
-    public Response addFriend(@RequestBody String email){
+    public Response addUser(@RequestBody String email){
         if(isNotValidUser(email)) {
             users.add(email);
             return new Response(true);
