@@ -2,6 +2,7 @@ package com.sp.controller;
 
 import com.sp.pojo.AddFriendRequest;
 import com.sp.pojo.AddFriendResponse;
+import com.sp.pojo.GetCommonFriendRequest;
 import com.sp.pojo.GetFriendResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,15 @@ public class FriendController {
     @PostMapping(value = "/get")
     public GetFriendResponse getFriend(@RequestBody String email){
         return new GetFriendResponse(true, friends.get(email), friends.get(email).size());
+    }
+
+    @PostMapping(value = "/getCommon")
+    public GetFriendResponse getCommonFriend(@RequestBody GetCommonFriendRequest request){
+        Set<String> a = friends.get(request.getFriends().get(0));
+        Set<String> b = friends.get(request.getFriends().get(1));
+        Set<String> common = new HashSet<>(a);
+        common.retainAll(b);
+        return new GetFriendResponse(true, common, common.size());
     }
 
 }
