@@ -29,8 +29,10 @@ public class FriendController {
 
     @PostMapping(value = "/addUser", headers = "Accept=application/json", produces = "application/json")
     public Response addFriend(@RequestBody String email){
-        users.add(email);
-        return new Response(true);
+        if(isNotValidUser(email)) {
+            users.add(email);
+            return new Response(true);
+        } else return new Response(false, email + " already exists");
     }
 
     @PostMapping(value = "/addFriend", headers = "Accept=application/json", produces = "application/json")

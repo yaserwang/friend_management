@@ -172,4 +172,13 @@ public class FriendControllerTest {
         PublishResponse body = this.restTemplate.postForObject("/publish", new PublishRequest("abc@example.com", "Hello World! kate@example.com"), PublishResponse.class);
         assertThat(body, is(new PublishResponse(false, "abc@example.com is not a valid user")));
     }
+
+    @Test
+    public void test7_addUser(){
+        Response body = this.restTemplate.postForObject("/addUser", "lisa2@example.com", Response.class);
+        assertThat(body, is(new Response(true)));
+
+        body = this.restTemplate.postForObject("/addUser", "lisa2@example.com", Response.class);
+        assertThat(body, is(new Response(false, "lisa2@example.com already exists")));
+    }
 }
