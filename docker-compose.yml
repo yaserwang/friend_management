@@ -1,0 +1,6 @@
+version: "3"
+services:
+  web:
+    image: yaserwang/friend-management:1.0
+    ports:
+      - "8080:8080"
