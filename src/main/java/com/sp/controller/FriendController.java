@@ -37,6 +37,9 @@ public class FriendController {
 
     @PostMapping(value = "/addFriend", headers = "Accept=application/json", produces = "application/json")
     public Response addFriend(@RequestBody FriendRequest request){
+        if(request.getFriends().size()!=2){
+            return new Response(false,  "only two users are allowed in the request to add friend");
+        }
         String requestor = request.getFriends().get(0);
         String target = request.getFriends().get(1);
         if(isNotValidUser(requestor)){
@@ -75,6 +78,9 @@ public class FriendController {
 
     @PostMapping(value = "/getCommon", headers = "Accept=application/json", produces = "application/json")
     public GetFriendResponse getCommonFriend(@RequestBody FriendRequest request){
+        if(request.getFriends().size()!=2){
+            return new GetFriendResponse(false,  "only two users are allowed in the request to get common friend");
+        }
         String a = request.getFriends().get(0);
         String b = request.getFriends().get(1);
         if(isNotValidUser(a)){
@@ -119,19 +125,16 @@ public class FriendController {
         if(isNotValidUser(request.getSender())){
             return new PublishResponse(false, request.getSender() + " is not a valid user");
         }
-        Set<String> recipients = new HashSet<>();
-        Set<String> friendList = friends.get(request.getSender());
-        if(friendList!=null)
-            recipients.addAll(friendList);
-        Set<String> subscribeList = subscribe.get(request.getSender());
-        if(subscribeList!=null)
-            recipients.addAll(subscribeList);
+        Set<String> friendList = friends.getOrDefault(request.getSender(), new HashSet<>());
+        Set<String> recipients = new HashSet<>(friendList);
+        Set<String> subscribeList = subscribe.getOrDefault(request.getSender(), new HashSet<>());
+        recipients.addAll(subscribeList);
         Set<String> mentioned = getMentioned(request.getText());
-        if(mentioned!=null && !mentioned.isEmpty())
+        if(mentioned!=null && !mentioned.isEmpty()) {
             recipients.addAll(mentioned);
-        Set<String> blockList = blocks.get(request.getSender());
-        if(blockList!=null)
-            recipients.removeAll(blockList);
+        }
+        Set<String> blockList = blocks.getOrDefault(request.getSender(), new HashSet<>());
+        recipients.removeAll(blockList);
         return new PublishResponse(true, recipients);
     }
 

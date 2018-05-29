@@ -45,6 +45,14 @@ public class FriendControllerTest {
     }
 
     @Test
+    public void test1_addFriend_withOneUser() {
+        List<String> friends = new ArrayList<>();
+        friends.add("andy@example.com");
+        Response body = this.restTemplate.postForObject("/addFriend", new FriendRequest(friends), Response.class);
+        assertThat(body, is(new Response(false, "only two users are allowed in the request to add friend")));
+    }
+
+    @Test
     public void test1_addFriend_withInvalidUser1() {
         List<String> friends = new ArrayList<>();
         friends.add("andy@example.com");
@@ -112,6 +120,15 @@ public class FriendControllerTest {
         GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getCommon", new FriendRequest(friends), GetFriendResponse.class);
         assertThat(getFriendResponseBody, is(new GetFriendResponse(true, returned)));
 
+    }
+
+    @Test
+    public void test3_getCommonFriends_withOneUser() {
+        List<String> friends = new ArrayList<>();
+        friends.add("john@example.com");
+
+        GetFriendResponse getFriendResponseBody = this.restTemplate.postForObject("/getCommon", new FriendRequest(friends), GetFriendResponse.class);
+        assertThat(getFriendResponseBody, is(new GetFriendResponse(false, "only two users are allowed in the request to get common friend")));
     }
 
     @Test
